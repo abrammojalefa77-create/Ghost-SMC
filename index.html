@@ -1,22 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ghost SMC PRO v3.1.0</title>
+
+<title>Ghost SMC PRO v3.3.0</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
-<header>
+
+<header class="header">
+
 <h1>👻 Ghost SMC PRO</h1>
-<p>Professional Smart Money Concepts Platform</p>
+
+<p>Professional Smart Money Concepts Platform v3.3.0</p>
+
 </header>
 
-<main>
 
-<section class="card">
+
+<main class="container">
+
+
+
+<section class="card market">
 
 <h2>Market Status</h2>
 
@@ -24,59 +38,163 @@
 
 <p><strong>Timeframe:</strong> <span id="timeframe">M15</span></p>
 
+<p><strong>Session:</strong> <span id="session">London</span></p>
+
 <p><strong>Trend:</strong> <span id="trend">Waiting...</span></p>
+
+<p><strong>Market Condition:</strong> <span id="condition">Analyzing...</span></p>
 
 <p><strong>Signal:</strong> <span id="signal">None</span></p>
 
 </section>
 
+
+
+
+
 <section class="card">
 
-<h2>Timeframes</h2>
+<h2>Timeframe Control</h2>
+
 
 <div class="timeframes">
 
-<button id="m1">M1</button>
-<button id="m5">M5</button>
-<button id="m15">M15</button>
-<button id="h1">H1</button>
-<button id="h4">H4</button>
-<button id="d1">D1</button>
+<button onclick="changeTF('1')">M1</button>
 
-<section class="card">
+<button onclick="changeTF('5')">M5</button>
 
-<h2>Chart</h2>
+<button onclick="changeTF('15')">M15</button>
 
-<div id="chart-container">
+<button onclick="changeTF('60')">H1</button>
+
+<button onclick="changeTF('240')">H4</button>
+
+<button onclick="changeTF('D')">D1</button>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<section class="card chart-card">
+
+<h2>TradingView Chart</h2>
+
+
+<div id="tradingview_chart">
 
 <div id="chart-placeholder">
 
-📈 TradingView Chart
+📊 Loading TradingView Chart...
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
 
 <section class="card">
 
-<h2>Smart Money Concepts</h2>
+<h2>Smart Money Concepts Engine</h2>
 
-<p>BOS: <span id="bos">Waiting...</span></p>
 
-<p>CHoCH: <span id="choch">Waiting...</span></p>
+<p>BOS:
+<span id="bos">Waiting...</span>
+</p>
 
-<p>Liquidity: <span id="liquidity">Waiting...</span></p>
 
-<p>Order Block: <span id="orderblock">Waiting...</span></p>
+<p>CHoCH:
+<span id="choch">Waiting...</span>
+</p>
 
-<p>Fair Value Gap: <span id="fvg">Waiting...</span></p>
+
+<p>Liquidity:
+<span id="liquidity">Waiting...</span>
+</p>
+
+
+<p>Order Block:
+<span id="orderblock">Waiting...</span>
+</p>
+
+
+<p>Fair Value Gap:
+<span id="fvg">Waiting...</span>
+</p>
+
 
 </section>
 
-</div>
 
-</div>
+
+
+
+<section class="card">
+
+<h2>Trade Setup</h2>
+
+
+<p>Entry:
+<span id="entry">--</span>
+</p>
+
+
+<p>Stop Loss:
+<span id="sl">--</span>
+</p>
+
+
+<p>Take Profit:
+<span id="tp">--</span>
+</p>
+
+
+<p>Risk:
+<span id="risk">1%</span>
+</p>
+
+
+<p>RR:
+<span id="rr">1:5</span>
+</p>
+
 
 </section>
 
-</div>
+
+
+
+<section class="card">
+
+<h2>Engine Status</h2>
+
+<p id="engine">
+Ghost SMC Engine Ready...
+</p>
 
 </section>
+
+
 
 </main>
+
+
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
