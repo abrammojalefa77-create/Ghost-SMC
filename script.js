@@ -1,398 +1,355 @@
+// =====================================
+// GHOST SMC PRO v3.5.0
+// PART 1 - CORE ENGINE
+// =====================================
 
+// ---------- APP STATE ----------
 
+const APP={
 
-// -------------------------
-// TradingView Chart
-// -------------------------
+symbol:"OANDA:XAUUSD",
 
-new TradingView.widget({
+timeframe:"15",
 
-container_id: "tradingview_chart",
+trend:"Waiting...",
 
-width: "100%",
-
-height: 500,
-
-symbol: "OANDA:XAUUSD",
-
-interval: "15",
-
-timezone: "Etc/UTC",
-
-theme: "dark",
-
-style: "1",
-
-locale: "en",
-
-toolbar_bg: "#111",
-
-enable_publishing: false,
-
-hide_side_toolbar: false,
-
-allow_symbol_change: true
-
-});
-
-
-// -------------------------
-// Market Status Variables
-// -------------------------
-
-let marketData = {
-
-price: 0,
-
-high: 0,
-
-low: 0,
+session:"Loading..."
 
 };
 
+let chart=null;
 
-let currentTrend = "Waiting...";
 
-
-// -------------------------
-// Session Detector
-// -------------------------
+// ---------- SESSION ENGINE ----------
 
 function updateSession(){
 
-let hour = new Date().getUTCHours();
+const hour=new Date().getUTCHours();
 
-let session = "Asia";
+let session="Asia";
 
+if(hour>=7&&hour<12) session="London";
 
-if(hour >= 7 && hour < 12){
+else if(hour>=12&&hour<17) session="New York";
 
-session = "London";
+APP.session=session;
 
-}
-
-
-else if(hour >= 12 && hour < 17){
-
-session = "New York";
+document.getElementById("session").innerHTML=session;
 
 }
 
 
-document.getElementById("session").innerHTML = session;
+// ---------- CHART ENGINE ----------
 
-}
+function loadChart(){
 
+document.getElementById("tradingview_chart").innerHTML='<div id="tv_chart"></div>';
 
-updateSession();
+chart=new TradingView.widget({
 
-setInterval(updateSession,60000);
+container_id:"tv_chart",
 
-// -------------------------
-// Market Condition Engine
-// -------------------------
+width:"100%",
 
-function updateMarketCondition(){
+height:500,
 
-let condition = "Ranging";
+symbol:APP.symbol,
 
+interval:APP.timeframe,
 
-if(currentTrend === "Bullish"){
+timezone:"Etc/UTC",
 
-condition = "Trending Up";
+theme:"dark",
 
-}
+style:"1",
 
+locale:"en",
 
-else if(currentTrend === "Bearish"){
+toolbar_bg:"#111",
 
-condition = "Trending Down";
+enable_publishing:false,
 
-}
+hide_side_toolbar:false,
 
-
-document.getElementById("condition").innerHTML = condition;
-
-
-document.getElementById("trend").innerHTML = currentTrend;
-
-}
-
-
-// -------------------------
-// SMC Structure Engine
-// -------------------------
-
-function updateSMCEngine(){
-
-let bos = "Waiting...";
-
-let choch = "Waiting...";
-
-let liquidity = "Scanning...";
-
-let orderblock = "Searching...";
-
-let fvg = "Scanning...";
-
-
-// Engine foundation
-// Real candle logic will be added next
-
-
-document.getElementById("bos").innerHTML = bos;
-
-document.getElementById("choch").innerHTML = choch;
-
-document.getElementById("liquidity").innerHTML = liquidity;
-
-document.getElementById("orderblock").innerHTML = orderblock;
-
-document.getElementById("fvg").innerHTML = fvg;
-
-
-}
-
-
-updateMarketCondition();
-
-updateSMCEngine();
-
-
-setInterval(updateMarketCondition,5000);
-
-setInterval(updateSMCEngine,5000);
-
-// -------------------------
-// SMC Swing Structure Scanner
-// -------------------------
-
-let previousHigh = 0;
-
-let previousLow = 0;
-
-let structure = "Neutral";
-
-
-
-function scanStructure(){
-
-
-let price = marketData.price;
-
-
-// Waiting for live price feed
-
-if(price === 0){
-
-return;
-
-}
-
-
-// Basic structure framework
-
-
-if(price > previousHigh && previousHigh !== 0){
-
-
-structure = "Bullish";
-
-currentTrend = "Bullish";
-
-
-document.getElementById("bos").innerHTML = "Bullish BOS";
-
-
-}
-
-
-else if(price < previousLow && previousLow !== 0){
-
-
-structure = "Bearish";
-
-currentTrend = "Bearish";
-
-
-document.getElementById("bos").innerHTML = "Bearish BOS";
-
-
-}
-
-
-// Update dashboard
-
-document.getElementById("trend").innerHTML = currentTrend;
-
-
-
-}
-
-
-
-// -------------------------
-// Liquidity & Zone Scanner
-// -------------------------
-
-function updateLiquidity(){
-
-
-if(currentTrend === "Bullish"){
-
-
-document.getElementById("liquidity").innerHTML =
-"Sell Side Liquidity Cleared";
-
-
-document.getElementById("orderblock").innerHTML =
-"Demand Zone";
-
-
-document.getElementById("fvg").innerHTML =
-"Bullish FVG";
-
-
-}
-
-
-else if(currentTrend === "Bearish"){
-
-
-document.getElementById("liquidity").innerHTML =
-"Buy Side Liquidity Cleared";
-
-
-document.getElementById("orderblock").innerHTML =
-"Supply Zone";
-
-
-document.getElementById("fvg").innerHTML =
-"Bearish FVG";
-
-
-}
-
-
-}
-
-
-
-setInterval(scanStructure,5000);
-
-setInterval(updateLiquidity,5000);
-// Ghost SMC Timeframe Buttons
-
-let buttons = document.querySelectorAll(".timeframes button");
-
-buttons.forEach(function(button){
-
-button.onclick = function(){
-
-let tf = button.innerHTML;
-
-document.getElementById("timeframe").innerHTML = tf;
-
-console.log("Timeframe changed:", tf);
-
-};
+allow_symbol_change:true
 
 });
 
-// ===============================
-// GHOST SMC ANALYSIS ENGINE v3.3
-// ===============================
+}
 
 
-function runSMCEngine(){
+// ---------- TIMEFRAME ENGINE ----------
 
+function changeTF(tf){
 
-let trend =
-document.getElementById("trend");
+APP.timeframe=tf;
 
-let condition =
-document.getElementById("condition");
+let label="M15";
 
-let signal =
-document.getElementById("signal");
+if(tf==="1") label="M1";
+if(tf==="5") label="M5";
+if(tf==="15") label="M15";
+if(tf==="60") label="H1";
+if(tf==="240") label="H4";
+if(tf==="D") label="D1";
 
-let bos =
-document.getElementById("bos");
+document.getElementById("timeframe").innerHTML=label;
 
-let choch =
-document.getElementById("choch");
-
-let liquidity =
-document.getElementById("liquidity");
-
-let orderblock =
-document.getElementById("orderblock");
-
-let fvg =
-document.getElementById("fvg");
-
-
-
-trend.innerHTML = "Bullish / Bearish Scan";
-
-condition.innerHTML = "Market Structure Analysis";
-
-signal.innerHTML = "Waiting For Setup";
-
-
-bos.innerHTML = "Searching...";
-choch.innerHTML = "Searching...";
-
-liquidity.innerHTML = "Scanning Liquidity";
-
-orderblock.innerHTML = "Finding Zones";
-
-fvg.innerHTML = "Scanning Gaps";
-
-
-
-setTimeout(()=>{
-
-bos.innerHTML = "Detected";
-
-},1500);
-
-
-
-setTimeout(()=>{
-
-choch.innerHTML = "Monitoring";
-
-},2500);
-
-
-
-setTimeout(()=>{
-
-liquidity.innerHTML = "Active";
-
-},3500);
-
-
-
-setTimeout(()=>{
-
-orderblock.innerHTML = "Ready";
-
-},4500);
-
-
-
-setTimeout(()=>{
-
-fvg.innerHTML = "Searching";
-
-},5500);
-
-
+loadChart();
 
 }
 
 
+// ---------- START ----------
 
-setInterval(runSMCEngine,10000);
+window.onload=function(){
+
+updateSession();
+
+loadChart();
+
+setInterval(updateSession,60000);
+
+};
+
+// =====================================
+// PART 2 - MARKET STATUS ENGINE
+// =====================================
+
+const STATUS={
+
+trend:"Waiting...",
+
+condition:"Analyzing...",
+
+signal:"None"
+
+};
+
+
+function updateMarketStatus(){
+
+document.getElementById("trend").innerHTML=STATUS.trend;
+
+document.getElementById("condition").innerHTML=STATUS.condition;
+
+document.getElementById("signal").innerHTML=STATUS.signal;
+
+}
+
+
+function setBullish(){
+
+STATUS.trend="Bullish";
+
+STATUS.condition="Trending Up";
+
+STATUS.signal="Looking for Buy";
+
+updateMarketStatus();
+
+}
+
+
+function setBearish(){
+
+STATUS.trend="Bearish";
+
+STATUS.condition="Trending Down";
+
+STATUS.signal="Looking for Sell";
+
+updateMarketStatus();
+
+}
+
+
+// INITIAL DISPLAY
+
+updateMarketStatus();
+
+// =====================================
+// PART 3 - GHOST SMC STRUCTURE ENGINE
+// =====================================
+
+const STRUCTURE={
+
+trend:"Neutral",
+
+bos:"Waiting...",
+
+choch:"Waiting...",
+
+lastSwingHigh:null,
+
+lastSwingLow:null
+
+};
+
+
+function updateStructure(){
+
+document.getElementById("bos").innerHTML=STRUCTURE.bos;
+
+document.getElementById("choch").innerHTML=STRUCTURE.choch;
+
+}
+
+
+function bullishBOS(){
+
+STRUCTURE.trend="Bullish";
+
+STRUCTURE.bos="Bullish BOS";
+
+STRUCTURE.choch="Waiting...";
+
+STATUS.trend="Bullish";
+
+STATUS.condition="Trending Up";
+
+STATUS.signal="Looking for Buy";
+
+updateStructure();
+
+updateMarketStatus();
+
+}
+
+
+function bearishBOS(){
+
+STRUCTURE.trend="Bearish";
+
+STRUCTURE.bos="Bearish BOS";
+
+STRUCTURE.choch="Waiting...";
+
+STATUS.trend="Bearish";
+
+STATUS.condition="Trending Down";
+
+STATUS.signal="Looking for Sell";
+
+updateStructure();
+
+updateMarketStatus();
+
+}
+
+
+updateStructure();
+
+// =====================================
+// PART 4 - LIQUIDITY ENGINE
+// =====================================
+
+const LIQUIDITY={
+
+status:"Scanning...",
+
+orderBlock:"Searching...",
+
+fvg:"Searching..."
+
+};
+
+
+function updateLiquidity(){
+
+document.getElementById("liquidity").innerHTML=LIQUIDITY.status;
+
+document.getElementById("orderblock").innerHTML=LIQUIDITY.orderBlock;
+
+document.getElementById("fvg").innerHTML=LIQUIDITY.fvg;
+
+}
+
+
+function bullishLiquidity(){
+
+LIQUIDITY.status="Sell Side Liquidity";
+
+LIQUIDITY.orderBlock="Demand Zone";
+
+LIQUIDITY.fvg="Bullish FVG";
+
+updateLiquidity();
+
+}
+
+
+function bearishLiquidity(){
+
+LIQUIDITY.status="Buy Side Liquidity";
+
+LIQUIDITY.orderBlock="Supply Zone";
+
+LIQUIDITY.fvg="Bearish FVG";
+
+updateLiquidity();
+
+}
+
+
+updateLiquidity();
+
+// =====================================
+// PART 5 - GHOST STRUCTURE FRAMEWORK
+// =====================================
+
+const GHOST={
+
+externalHigh:null,
+
+externalLow:null,
+
+trend:"Neutral",
+
+waitingForBreak:true
+
+};
+
+
+function updateGhostEngine(){
+
+// Placeholder for real candle data.
+// In the next version this will use actual
+// TradingView candle information.
+
+if(GHOST.trend==="Bullish"){
+
+STATUS.trend="Bullish";
+
+STATUS.condition="Trending Up";
+
+STATUS.signal="Waiting for BOS";
+
+}
+
+else if(GHOST.trend==="Bearish"){
+
+STATUS.trend="Bearish";
+
+STATUS.condition="Trending Down";
+
+STATUS.signal="Waiting for BOS";
+
+}
+
+else{
+
+STATUS.trend="Neutral";
+
+STATUS.condition="Building Structure";
+
+STATUS.signal="No Trade";
+
+}
+
+updateMarketStatus();
+
+}
+
+
+setInterval(updateGhostEngine,3000);
