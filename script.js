@@ -1,230 +1,229 @@
-// =================================
-// Ghost SMC PRO v3.2.0
-// TradingView Foundation + Dashboard
-// =================================
 
 
-// ================================
-// STATE
-// ================================
 
-const state = {
+// -------------------------
+// TradingView Chart
+// -------------------------
 
-    pair: "XAUUSD",
+new TradingView.widget({
 
-    timeframe: "15",
+container_id: "tradingview_chart",
 
-    trend: "Waiting...",
+width: "100%",
 
-    signal: "None",
+height: 500,
 
-    bos: "Waiting...",
+symbol: "OANDA:XAUUSD",
 
-    choch: "Waiting...",
+interval: "15",
 
-    liquidity: "Waiting...",
+timezone: "Etc/UTC",
 
-    orderblock: "Waiting...",
+theme: "dark",
 
-    fvg: "Waiting..."
+style: "1",
+
+locale: "en",
+
+toolbar_bg: "#111",
+
+enable_publishing: false,
+
+hide_side_toolbar: false,
+
+allow_symbol_change: true
+
+});
+
+
+// -------------------------
+// Market Status Variables
+// -------------------------
+
+let marketData = {
+
+price: 0,
+
+high: 0,
+
+low: 0,
 
 };
 
 
-
-// ================================
-// UPDATE DASHBOARD
-// ================================
-
-function updateDashboard(){
+let currentTrend = "Waiting...";
 
 
-    document.getElementById("pair").textContent = state.pair;
+// -------------------------
+// Session Detector
+// -------------------------
 
-    document.getElementById("timeframe").textContent = "M" + state.timeframe;
+function updateSession(){
+
+let hour = new Date().getUTCHours();
+
+let session = "Asia";
 
 
-    document.getElementById("trend").textContent = state.trend;
+if(hour >= 7 && hour < 12){
 
-    document.getElementById("signal").textContent = state.signal;
-
-
-    document.getElementById("bos").textContent = state.bos;
-
-    document.getElementById("choch").textContent = state.choch;
-
-    document.getElementById("liquidity").textContent = state.liquidity;
-
-    document.getElementById("orderblock").textContent = state.orderblock;
-
-    document.getElementById("fvg").textContent = state.fvg;
+session = "London";
 
 }
 
 
+else if(hour >= 12 && hour < 17){
 
-// ================================
-// TIMEFRAME BUTTONS
-// ================================
-
-function setTimeframe(tf){
-
-
-    state.timeframe = tf;
-
-
-    updateDashboard();
-
+session = "New York";
 
 }
 
 
-
-
-
-// ================================
-// TRADINGVIEW WIDGET
-// ================================
-
-
-function loadTradingView(){
-
-
-    const script = document.createElement("script");
-
-
-    script.src =
-    "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
-
-
-    script.async = true;
-
-
-
-    script.innerHTML = JSON.stringify({
-
-        "autosize": true,
-
-        "symbol": "OANDA:XAUUSD",
-
-        "interval": "15",
-
-        "timezone": "Etc/UTC",
-
-        "theme": "dark",
-
-        "style": "1",
-
-        "locale": "en",
-
-        "hide_top_toolbar": false,
-
-        "hide_legend": false,
-
-        "allow_symbol_change": true,
-
-        "container_id": "tradingview_chart"
-
-    });
-
-
-
-    document.getElementById("tradingview_chart")
-    .appendChild(script);
-
+document.getElementById("session").innerHTML = session;
 
 }
 
 
+updateSession();
+
+setInterval(updateSession,60000);
+
+// -------------------------
+// Market Condition Engine
+// -------------------------
+
+function updateMarketCondition(){
+
+let condition = "Ranging";
 
 
+if(currentTrend === "Bullish"){
+
+condition = "Trending Up";
+
+}
 
 
-// ================================
-// DEMO SMC ENGINE
-// ================================
+else if(currentTrend === "Bearish"){
 
-function startDemoEngine(){
+condition = "Trending Down";
 
-
-setInterval(()=>{
+}
 
 
-let chance = Math.random();
+document.getElementById("condition").innerHTML = condition;
 
 
+document.getElementById("trend").innerHTML = currentTrend;
 
-if(chance > 0.65){
+}
 
 
-state.trend="Bullish";
+// -------------------------
+// SMC Structure Engine
+// -------------------------
 
-state.signal="BUY";
+function updateSMCEngine(){
 
-state.bos="✅ BOS Confirmed";
+let bos = "Waiting...";
 
-state.choch="Waiting...";
+let choch = "Waiting...";
 
-state.liquidity="Buy Side Liquidity";
+let liquidity = "Scanning...";
 
-state.orderblock="Bullish Order Block";
+let orderblock = "Searching...";
 
-state.fvg="FVG Present";
+let fvg = "Scanning...";
+
+
+// Engine foundation
+// Real candle logic will be added next
+
+
+document.getElementById("bos").innerHTML = bos;
+
+document.getElementById("choch").innerHTML = choch;
+
+document.getElementById("liquidity").innerHTML = liquidity;
+
+document.getElementById("orderblock").innerHTML = orderblock;
+
+document.getElementById("fvg").innerHTML = fvg;
 
 
 }
 
 
+updateMarketCondition();
 
-else if(chance < 0.35){
+updateSMCEngine();
 
 
-state.trend="Bearish";
+setInterval(updateMarketCondition,5000);
 
-state.signal="SELL";
+setInterval(updateSMCEngine,5000);
 
-state.bos="Waiting...";
+// -------------------------
+// SMC Swing Structure Scanner
+// -------------------------
 
-state.choch="⚡ CHoCH Detected";
+let previousHigh = 0;
 
-state.liquidity="Sell Side Liquidity";
+let previousLow = 0;
 
-state.orderblock="Bearish Order Block";
+let structure = "Neutral";
 
-state.fvg="FVG Present";
+
+
+function scanStructure(){
+
+
+let price = marketData.price;
+
+
+// Waiting for live price feed
+
+if(price === 0){
+
+return;
+
+}
+
+
+// Basic structure framework
+
+
+if(price > previousHigh && previousHigh !== 0){
+
+
+structure = "Bullish";
+
+currentTrend = "Bullish";
+
+
+document.getElementById("bos").innerHTML = "Bullish BOS";
 
 
 }
 
 
+else if(price < previousLow && previousLow !== 0){
 
-else{
+
+structure = "Bearish";
+
+currentTrend = "Bearish";
 
 
-state.trend="Ranging";
-
-state.signal="WAIT";
-
-state.bos="Waiting...";
-
-state.choch="Waiting...";
-
-state.liquidity="Searching";
-
-state.orderblock="None";
-
-state.fvg="None";
+document.getElementById("bos").innerHTML = "Bearish BOS";
 
 
 }
 
 
+// Update dashboard
 
-updateDashboard();
-
-
-
-},3000);
+document.getElementById("trend").innerHTML = currentTrend;
 
 
 
@@ -232,60 +231,168 @@ updateDashboard();
 
 
 
+// -------------------------
+// Liquidity & Zone Scanner
+// -------------------------
+
+function updateLiquidity(){
+
+
+if(currentTrend === "Bullish"){
+
+
+document.getElementById("liquidity").innerHTML =
+"Sell Side Liquidity Cleared";
+
+
+document.getElementById("orderblock").innerHTML =
+"Demand Zone";
+
+
+document.getElementById("fvg").innerHTML =
+"Bullish FVG";
+
+
+}
+
+
+else if(currentTrend === "Bearish"){
+
+
+document.getElementById("liquidity").innerHTML =
+"Buy Side Liquidity Cleared";
+
+
+document.getElementById("orderblock").innerHTML =
+"Supply Zone";
+
+
+document.getElementById("fvg").innerHTML =
+"Bearish FVG";
+
+
+}
+
+
+}
 
 
 
+setInterval(scanStructure,5000);
 
-// ================================
-// START APP
-// ================================
+setInterval(updateLiquidity,5000);
+// Ghost SMC Timeframe Buttons
 
+let buttons = document.querySelectorAll(".timeframes button");
 
-document.addEventListener("DOMContentLoaded",()=>{
+buttons.forEach(function(button){
 
+button.onclick = function(){
 
-updateDashboard();
+let tf = button.innerHTML;
 
+document.getElementById("timeframe").innerHTML = tf;
 
+console.log("Timeframe changed:", tf);
 
-const buttons =
-document.querySelectorAll(".timeframes button");
-
-
-
-buttons.forEach(button=>{
-
-
-button.addEventListener("click",()=>{
-
-
-let text = button.textContent;
-
-
-let tf = text.replace("M","").replace("H","").replace("D","");
-
-
-
-state.timeframe = tf;
-
-
-
-updateDashboard();
-
-
+};
 
 });
 
-
-});
-
-
-
-loadTradingView();
+// ===============================
+// GHOST SMC ANALYSIS ENGINE v3.3
+// ===============================
 
 
-startDemoEngine();
+function runSMCEngine(){
+
+
+let trend =
+document.getElementById("trend");
+
+let condition =
+document.getElementById("condition");
+
+let signal =
+document.getElementById("signal");
+
+let bos =
+document.getElementById("bos");
+
+let choch =
+document.getElementById("choch");
+
+let liquidity =
+document.getElementById("liquidity");
+
+let orderblock =
+document.getElementById("orderblock");
+
+let fvg =
+document.getElementById("fvg");
 
 
 
-});
+trend.innerHTML = "Bullish / Bearish Scan";
+
+condition.innerHTML = "Market Structure Analysis";
+
+signal.innerHTML = "Waiting For Setup";
+
+
+bos.innerHTML = "Searching...";
+choch.innerHTML = "Searching...";
+
+liquidity.innerHTML = "Scanning Liquidity";
+
+orderblock.innerHTML = "Finding Zones";
+
+fvg.innerHTML = "Scanning Gaps";
+
+
+
+setTimeout(()=>{
+
+bos.innerHTML = "Detected";
+
+},1500);
+
+
+
+setTimeout(()=>{
+
+choch.innerHTML = "Monitoring";
+
+},2500);
+
+
+
+setTimeout(()=>{
+
+liquidity.innerHTML = "Active";
+
+},3500);
+
+
+
+setTimeout(()=>{
+
+orderblock.innerHTML = "Ready";
+
+},4500);
+
+
+
+setTimeout(()=>{
+
+fvg.innerHTML = "Searching";
+
+},5500);
+
+
+
+}
+
+
+
+setInterval(runSMCEngine,10000);
