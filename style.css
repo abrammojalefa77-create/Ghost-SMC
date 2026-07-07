@@ -1,7 +1,8 @@
 /* =================================
-   Ghost SMC PRO v3.1.0
-   Terminal UI Design
+   Ghost SMC PRO v3.2.0
+   TradingView Chart Layout
 ================================= */
+
 
 * {
     box-sizing: border-box;
@@ -11,177 +12,270 @@
 
 
 body {
+
     background: #050816;
+
     color: #ffffff;
+
     font-family: Arial, sans-serif;
+
     min-height: 100vh;
+
 }
+
 
 
 /* HEADER */
 
 .header {
+
     background: #0b1220;
+
     padding: 25px;
+
     text-align: center;
+
     border-bottom: 2px solid #1e293b;
+
 }
 
 
 .header h1 {
+
     font-size: 32px;
-    margin-bottom: 10px;
+
+    color: #38bdf8;
+
 }
 
 
 .header p {
+
+    margin-top: 10px;
+
     color: #94a3b8;
+
 }
 
 
-/* MAIN CONTAINER */
+
+
+
+/* MAIN GRID */
 
 .container {
+
     width: 95%;
+
     margin: 20px auto;
+
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+
+    grid-template-columns: 1fr 1fr;
+
     gap: 20px;
+
 }
+
+
 
 
 
 /* CARDS */
 
 .card {
+
     background: #111827;
-    border-radius: 15px;
-    padding: 20px;
+
     border: 1px solid #1f2937;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+
+    border-radius: 15px;
+
+    padding: 20px;
+
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+
 }
+
 
 
 .card h2 {
+
     color: #38bdf8;
+
     margin-bottom: 15px;
-    font-size: 22px;
+
 }
 
 
+
 .card p {
-    margin: 12px 0;
+
     color: #cbd5e1;
+
+    margin: 12px 0;
+
 }
 
 
 .card span {
-    color: #ffffff;
+
+    color: white;
+
     font-weight: bold;
+
 }
 
 
 
-/* MARKET STATUS */
+
+/* MARKET PANEL */
 
 .market {
+
     grid-column: span 2;
+
 }
+
+
 
 
 
 /* TIMEFRAME BUTTONS */
 
+
 .timeframes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
 }
+
 
 
 button {
 
-    background: #1e293b;
-    color: white;
+    background:#1e293b;
 
-    border: none;
+    color:white;
 
-    padding: 14px 22px;
+    border:none;
 
-    border-radius: 10px;
+    padding:14px 20px;
 
-    font-size: 16px;
+    border-radius:10px;
 
-    cursor: pointer;
+    cursor:pointer;
 
-    transition: 0.3s;
+    font-size:16px;
+
+    transition:0.3s;
+
 }
 
 
 
 button:hover {
 
-    background: #38bdf8;
+    background:#38bdf8;
 
-    color: #020617;
-
-    transform: translateY(-2px);
+    color:#020617;
 
 }
 
 
 
-/* CHART */
+
+
+/* TRADINGVIEW AREA */
+
 
 .chart-card {
 
-    grid-column: span 2;
+    grid-column:span 2;
 
 }
+
+
+
+#tradingview_chart {
+
+
+    width:100%;
+
+
+}
+
 
 
 #chart-placeholder {
 
-    height: 420px;
 
-    background: #020617;
+    height:500px;
 
-    border: 2px dashed #334155;
 
-    border-radius: 15px;
+    background:#020617;
 
-    display: flex;
 
-    align-items: center;
+    border:2px dashed #334155;
 
-    justify-content: center;
 
-    font-size: 30px;
+    border-radius:15px;
 
-    color: #64748b;
+
+    display:flex;
+
+
+    justify-content:center;
+
+
+    align-items:center;
+
+
+    font-size:28px;
+
+
+    color:#64748b;
+
 
 }
 
 
 
-/* SIGNAL COLORS */
 
-#signal {
 
-    color: #facc15;
+/* SMC PANEL */
+
+
+#bos {
+
+    color:#22c55e;
+
+}
+
+
+#choch {
+
+    color:#facc15;
 
 }
 
 
-#trend {
+#liquidity {
 
-    color: #22c55e;
+    color:#38bdf8;
 
 }
+
+
 
 
 
 /* TRADE SETUP */
+
 
 #entry,
 #sl,
@@ -189,39 +283,31 @@ button:hover {
 #risk,
 #rr {
 
-    color: #38bdf8;
+    color:#38bdf8;
 
 }
 
 
 
-/* MOBILE DESIGN */
+
+
+/* MOBILE */
+
 
 @media(max-width:768px){
 
 
 .container {
 
-    grid-template-columns: 1fr;
-
-    width: 92%;
+    grid-template-columns:1fr;
 
 }
-
 
 
 .market,
 .chart-card {
 
-    grid-column: span 1;
-
-}
-
-
-
-.header h1 {
-
-    font-size: 24px;
+    grid-column:span 1;
 
 }
 
@@ -229,9 +315,9 @@ button:hover {
 
 #chart-placeholder {
 
-    height: 250px;
+    height:280px;
 
-    font-size: 22px;
+    font-size:20px;
 
 }
 
@@ -239,12 +325,9 @@ button:hover {
 
 button {
 
-    flex: 1;
-
-    min-width: 80px;
+    flex:1;
 
 }
-
 
 
 }
