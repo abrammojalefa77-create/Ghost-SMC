@@ -264,3 +264,154 @@ setInterval(()=>{
 detectLiquidity();
 
 },7000);
+
+// =====================================
+// GHOST SMC PRO v3.4.0
+// PART 3 - TRADE SETUP ENGINE
+// =====================================
+
+
+let tradeData = {
+
+entry:"--",
+
+sl:"--",
+
+tp:"--",
+
+risk:"1%",
+
+rr:"1:5"
+
+};
+
+
+
+
+
+function generateTradeSetup(){
+
+
+let setup = Math.random();
+
+
+
+if(setup > 0.6){
+
+
+tradeData.entry = "BUY ZONE";
+
+tradeData.sl = "Below Demand";
+
+tradeData.tp = "Next Supply";
+
+
+}
+
+
+else if(setup < 0.4){
+
+
+tradeData.entry = "SELL ZONE";
+
+tradeData.sl = "Above Supply";
+
+tradeData.tp = "Next Demand";
+
+
+}
+
+
+else{
+
+
+tradeData.entry = "Waiting";
+
+tradeData.sl = "--";
+
+tradeData.tp = "--";
+
+
+}
+
+
+
+updateTradeDisplay();
+
+
+}
+
+
+
+
+
+function updateTradeDisplay(){
+
+
+let entry =
+document.getElementById("entry");
+
+
+let sl =
+document.getElementById("sl");
+
+
+let tp =
+document.getElementById("tp");
+
+
+let risk =
+document.getElementById("risk");
+
+
+let rr =
+document.getElementById("rr");
+
+
+
+if(entry){
+
+entry.innerHTML = tradeData.entry;
+
+}
+
+
+if(sl){
+
+sl.innerHTML = tradeData.sl;
+
+}
+
+
+if(tp){
+
+tp.innerHTML = tradeData.tp;
+
+}
+
+
+if(risk){
+
+risk.innerHTML = tradeData.risk;
+
+}
+
+
+if(rr){
+
+rr.innerHTML = tradeData.rr;
+
+}
+
+
+}
+
+
+
+
+
+setInterval(()=>{
+
+generateTradeSetup();
+
+},9000);
