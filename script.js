@@ -1,20 +1,31 @@
 // =================================
-// Ghost SMC PRO v3.1.0
-// Dashboard Engine Fixed
+// Ghost SMC PRO v3.2.0
+// TradingView Foundation + Dashboard
 // =================================
 
+
+// ================================
+// STATE
+// ================================
 
 const state = {
 
     pair: "XAUUSD",
-    timeframe: "M15",
+
+    timeframe: "15",
+
     trend: "Waiting...",
+
     signal: "None",
 
     bos: "Waiting...",
+
     choch: "Waiting...",
+
     liquidity: "Waiting...",
+
     orderblock: "Waiting...",
+
     fvg: "Waiting..."
 
 };
@@ -22,14 +33,16 @@ const state = {
 
 
 // ================================
-// UPDATE SCREEN
+// UPDATE DASHBOARD
 // ================================
 
 function updateDashboard(){
 
+
     document.getElementById("pair").textContent = state.pair;
 
-    document.getElementById("timeframe").textContent = state.timeframe;
+    document.getElementById("timeframe").textContent = "M" + state.timeframe;
+
 
     document.getElementById("trend").textContent = state.trend;
 
@@ -56,38 +69,73 @@ function updateDashboard(){
 
 function setTimeframe(tf){
 
+
     state.timeframe = tf;
 
+
     updateDashboard();
+
 
 }
 
 
 
-document.addEventListener("DOMContentLoaded",function(){
 
 
-    updateDashboard();
+// ================================
+// TRADINGVIEW WIDGET
+// ================================
 
 
-    const buttons = document.querySelectorAll(".timeframes button");
+function loadTradingView(){
 
 
-    buttons.forEach(function(button){
+    const script = document.createElement("script");
 
-        button.addEventListener("click",function(){
 
-            setTimeframe(button.textContent);
+    script.src =
+    "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
 
-        });
+
+    script.async = true;
+
+
+
+    script.innerHTML = JSON.stringify({
+
+        "autosize": true,
+
+        "symbol": "OANDA:XAUUSD",
+
+        "interval": "15",
+
+        "timezone": "Etc/UTC",
+
+        "theme": "dark",
+
+        "style": "1",
+
+        "locale": "en",
+
+        "hide_top_toolbar": false,
+
+        "hide_legend": false,
+
+        "allow_symbol_change": true,
+
+        "container_id": "tradingview_chart"
 
     });
 
 
-    startDemoEngine();
+
+    document.getElementById("tradingview_chart")
+    .appendChild(script);
 
 
-});
+}
+
+
 
 
 
@@ -99,80 +147,145 @@ document.addEventListener("DOMContentLoaded",function(){
 function startDemoEngine(){
 
 
-    setInterval(function(){
+setInterval(()=>{
 
 
-        let chance = Math.random();
+let chance = Math.random();
 
 
 
-        if(chance > 0.65){
+if(chance > 0.65){
 
 
-            state.trend = "Bullish";
+state.trend="Bullish";
 
-            state.signal = "BUY";
+state.signal="BUY";
 
-            state.bos = "✅ BOS Confirmed";
+state.bos="✅ BOS Confirmed";
 
-            state.choch = "Waiting...";
+state.choch="Waiting...";
 
-            state.liquidity = "Buy Side Liquidity";
+state.liquidity="Buy Side Liquidity";
 
-            state.orderblock = "Bullish Order Block";
+state.orderblock="Bullish Order Block";
 
-            state.fvg = "FVG Present";
-
-
-        }
-
-
-        else if(chance < 0.35){
-
-
-            state.trend = "Bearish";
-
-            state.signal = "SELL";
-
-            state.bos = "Waiting...";
-
-            state.choch = "⚡ CHoCH Detected";
-
-            state.liquidity = "Sell Side Liquidity";
-
-            state.orderblock = "Bearish Order Block";
-
-            state.fvg = "FVG Present";
-
-
-        }
-
-
-        else{
-
-
-            state.trend = "Ranging";
-
-            state.signal = "WAIT";
-
-            state.bos = "Waiting...";
-
-            state.choch = "Waiting...";
-
-            state.liquidity = "Searching";
-
-            state.orderblock = "None";
-
-            state.fvg = "None";
-
-
-        }
-
-
-        updateDashboard();
-
-
-    },3000);
+state.fvg="FVG Present";
 
 
 }
+
+
+
+else if(chance < 0.35){
+
+
+state.trend="Bearish";
+
+state.signal="SELL";
+
+state.bos="Waiting...";
+
+state.choch="⚡ CHoCH Detected";
+
+state.liquidity="Sell Side Liquidity";
+
+state.orderblock="Bearish Order Block";
+
+state.fvg="FVG Present";
+
+
+}
+
+
+
+else{
+
+
+state.trend="Ranging";
+
+state.signal="WAIT";
+
+state.bos="Waiting...";
+
+state.choch="Waiting...";
+
+state.liquidity="Searching";
+
+state.orderblock="None";
+
+state.fvg="None";
+
+
+}
+
+
+
+updateDashboard();
+
+
+
+},3000);
+
+
+
+}
+
+
+
+
+
+
+
+// ================================
+// START APP
+// ================================
+
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+
+updateDashboard();
+
+
+
+const buttons =
+document.querySelectorAll(".timeframes button");
+
+
+
+buttons.forEach(button=>{
+
+
+button.addEventListener("click",()=>{
+
+
+let text = button.textContent;
+
+
+let tf = text.replace("M","").replace("H","").replace("D","");
+
+
+
+state.timeframe = tf;
+
+
+
+updateDashboard();
+
+
+
+});
+
+
+});
+
+
+
+loadTradingView();
+
+
+startDemoEngine();
+
+
+
+});
