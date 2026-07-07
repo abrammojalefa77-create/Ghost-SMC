@@ -353,3 +353,232 @@ updateMarketStatus();
 
 
 setInterval(updateGhostEngine,3000);
+
+// =====================================
+// GHOST SMC PRO v3.6.0
+// PART 1 - STRUCTURE MEMORY
+// =====================================
+
+const MEMORY={
+
+trend:"Neutral",
+
+previousTrend:"Neutral",
+
+externalHigh:null,
+
+externalLow:null,
+
+protectedHigh:null,
+
+protectedLow:null,
+
+lastBOS:null,
+
+lastCHoCH:null,
+
+bosConfirmed:false,
+
+chochConfirmed:false
+
+};
+
+
+function resetStructure(){
+
+MEMORY.previousTrend=MEMORY.trend;
+
+MEMORY.lastBOS=null;
+
+MEMORY.lastCHoCH=null;
+
+MEMORY.bosConfirmed=false;
+
+MEMORY.chochConfirmed=false;
+
+}
+
+
+function setTrend(newTrend){
+
+if(MEMORY.trend!==newTrend){
+
+MEMORY.previousTrend=MEMORY.trend;
+
+MEMORY.trend=newTrend;
+
+}
+
+}
+
+// =====================================
+// GHOST SMC PRO v3.6.0
+// PART 2 - EXTERNAL SWING ENGINE
+// =====================================
+
+const SWING={
+
+currentHigh:null,
+
+currentLow:null,
+
+confirmedHigh:null,
+
+confirmedLow:null
+
+};
+
+
+function updateExternalStructure(high,low){
+
+if(SWING.currentHigh===null||high>SWING.currentHigh){
+
+SWING.currentHigh=high;
+
+MEMORY.externalHigh=high;
+
+}
+
+
+if(SWING.currentLow===null||low<SWING.currentLow){
+
+SWING.currentLow=low;
+
+MEMORY.externalLow=low;
+
+}
+
+
+MEMORY.protectedHigh=MEMORY.externalHigh;
+
+MEMORY.protectedLow=MEMORY.externalLow;
+
+}
+
+// =====================================
+// GHOST SMC PRO v3.6.0
+// PART 3 - BOS VALIDATION ENGINE
+// =====================================
+
+function checkBOS(closePrice){
+
+if(MEMORY.protectedHigh!==null){
+
+if(closePrice>MEMORY.protectedHigh && !MEMORY.bosConfirmed){
+
+MEMORY.lastBOS="Bullish";
+
+MEMORY.bosConfirmed=true;
+
+setTrend("Bullish");
+
+STRUCTURE.bos="Bullish BOS";
+
+STATUS.trend="Bullish";
+
+STATUS.condition="Trending Up";
+
+STATUS.signal="Bullish BOS Confirmed";
+
+updateStructure();
+
+updateMarketStatus();
+
+}
+
+}
+
+
+if(MEMORY.protectedLow!==null){
+
+if(closePrice<MEMORY.protectedLow && !MEMORY.bosConfirmed){
+
+MEMORY.lastBOS="Bearish";
+
+MEMORY.bosConfirmed=true;
+
+setTrend("Bearish");
+
+STRUCTURE.bos="Bearish BOS";
+
+STATUS.trend="Bearish";
+
+STATUS.condition="Trending Down";
+
+STATUS.signal="Bearish BOS Confirmed";
+
+updateStructure();
+
+updateMarketStatus();
+
+}
+
+}
+
+}
+
+// =====================================
+// GHOST SMC PRO v3.6.0
+// PART 4 - CHoCH VALIDATION ENGINE
+// =====================================
+
+function checkCHoCH(closePrice){
+
+if(MEMORY.trend==="Bullish"){
+
+if(MEMORY.protectedLow!==null){
+
+if(closePrice<MEMORY.protectedLow && !MEMORY.chochConfirmed){
+
+MEMORY.lastCHoCH="Bearish";
+
+MEMORY.chochConfirmed=true;
+
+STRUCTURE.choch="Bearish CHoCH";
+
+STATUS.trend="Bearish";
+
+STATUS.condition="Possible Trend Reversal";
+
+STATUS.signal="Bearish CHoCH Confirmed";
+
+updateStructure();
+
+updateMarketStatus();
+
+}
+
+}
+
+}
+
+
+if(MEMORY.trend==="Bearish"){
+
+if(MEMORY.protectedHigh!==null){
+
+if(closePrice>MEMORY.protectedHigh && !MEMORY.chochConfirmed){
+
+MEMORY.lastCHoCH="Bullish";
+
+MEMORY.chochConfirmed=true;
+
+STRUCTURE.choch="Bullish CHoCH";
+
+STATUS.trend="Bullish";
+
+STATUS.condition="Possible Trend Reversal";
+
+STATUS.signal="Bullish CHoCH Confirmed";
+
+updateStructure();
+
+updateMarketStatus();
+
+}
+
+}
+
+}
+
+  }
